@@ -1,0 +1,14 @@
+{
+  "films": [
+    {
+      "id": 1,
+      "name": "Зеленая миля (1999)",
+      "description": "The Green Mile, 1999, 189 мин.",
+      "country": "США",
+      "genre": "Драма",
+      "director": "Фрэнк Дарабонт",
+      "actors": "Том Хэнкс, Дэвид Морс",
+      "poster": "http://localhost:5000/static/green_mile.webp"
+    }
+  ]
+}
