@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 5000;
 
-const films = require("./routes/films");
+const films = require("./controllers/films");
 
 app.use("/static", express.static("./src/static/"));
 
