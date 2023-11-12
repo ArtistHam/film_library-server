@@ -1,14 +1,1 @@
-{
-  "films": [
-    {
-      "id": 1,
-      "name": "Зеленая миля (1999)",
-      "description": "The Green Mile, 1999, 189 мин.",
-      "country": "США",
-      "genre": "Драма",
-      "director": "Фрэнк Дарабонт",
-      "actors": "Том Хэнкс, Дэвид Морс",
-      "poster": "http://localhost:5000/static/green_mile.webp"
-    }
-  ]
-}
+[{"id":1,"name":"Зеленая миля","description":"The Green Mile, 1999, 189 мин.","country":"США","genre":"Драма","director":"Фрэнк Дарабонт","actors":"Том Хэнкс, Дэвид Морс","poster":"http://localhost:5000/static/green_mile.webp"},{"id":2,"name":"Побег из Шоушенка","description":"The Shawshank Redemption, 1994, 189 мин.","country":"США","genre":"Драма","director":"Фрэнк Дарабонт","actors":"Тим Роббинс, Морган Фриман","poster":"http://localhost:5000/static/shawshank_redemption.webp"},{"id":3,"name":"Мафия","description":"Cool movie, 1999, 220 мин.","country":"United Kingdom","genre":"Комедия","director":"Василий Пятенко","actors":"Анна Лавренко","poster":"http://localhost:5000/static/placeholder.png"}]
