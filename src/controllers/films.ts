@@ -5,8 +5,12 @@ import { readFilePromise } from "../utils/readFilePromise";
 import { writeFilePromise } from "../utils/writeFilePromise";
 // types
 import { Request, Response } from "express";
+import { outFilmsCreateDto } from "../dto/outFilms.dto";
+import { inUpdateFilmDto } from "../dto/inUpdateFilm.dto";
+import { inCreateFilmDto } from "../dto/inCreateFilm.dto";
+import { outCreateFilmDto } from "../dto/outCreateFilm.dto";
 
-type Film = {
+type FilmType = {
   id: number;
   name: string;
   description: string;
@@ -18,11 +22,14 @@ type Film = {
 };
 
 const films = {
-  create: async (req: Request, res: Response) => {
+  create: async (
+    req: Request<{}, {}, inCreateFilmDto>,
+    res: Response<outCreateFilmDto | string>
+  ) => {
     try {
       const filmsData = await readFilePromise("./src/data/films.json");
       let filmsDataJSON = JSON.parse(filmsData);
-      let newFilm: Film = {
+      let newFilm: FilmType = {
         id: filmsDataJSON[filmsDataJSON.length - 1].id + 1,
         name: req.body.name || "Крутой фильм",
         description: req.body.description || "Cool movie, 1999, 220 мин.",
@@ -43,7 +50,7 @@ const films = {
       res.send("error occurred");
     }
   },
-  getAll: async (req: Request, res: Response) => {
+  getAll: async (req: Request, res: Response<outFilmsCreateDto | string>) => {
     try {
       const filmsData = await readFilePromise("./src/data/films.json");
       res.send(JSON.parse(filmsData));
@@ -51,11 +58,14 @@ const films = {
       res.send("error occurred");
     }
   },
-  get: async (req: Request, res: Response) => {
+  get: async (
+    req: Request<{ fid: string }>,
+    res: Response<FilmType[] | string>
+  ) => {
     try {
       const filmsData = await readFilePromise("./src/data/films.json");
       const filmData = JSON.parse(filmsData).find(
-        (item: Film) => item.id === +req.params.fid
+        (item: FilmType) => item.id === +req.params.fid
       );
       if (filmData) {
         res.send(filmData);
@@ -66,10 +76,13 @@ const films = {
       res.send("error occurred");
     }
   },
-  update: async (req: Request, res: Response) => {
+  update: async (
+    req: Request<{ fid: string }, {}, inUpdateFilmDto>,
+    res: Response<string>
+  ) => {
     try {
       const filmsData = await readFilePromise("./src/data/films.json");
-      const newFilmsData = JSON.parse(filmsData).map((item: Film) => {
+      const newFilmsData = JSON.parse(filmsData).map((item: FilmType) => {
         if (item.id === +req.params.fid) {
           const { name, description, country, genre, director, actors } =
             req.body;
@@ -96,11 +109,11 @@ const films = {
       res.send("error occurred");
     }
   },
-  delete: async (req: Request, res: Response) => {
+  delete: async (req: Request<{ fid: string }>, res: Response<string>) => {
     try {
       const filmsData = await readFilePromise("./src/data/films.json");
       const newFilmsData = JSON.parse(filmsData).filter(
-        (item: Film) => item.id !== +req.params.fid
+        (item: FilmType) => item.id !== +req.params.fid
       );
       res.sendStatus(204);
       const test = await writeFilePromise(

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const index_1 = require("../../index");
+const app_1 = require("../../app");
 const defaultData = [
     {
         id: 1,
@@ -48,18 +48,22 @@ const defaultData = [
 ];
 describe("/films", () => {
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(index_1.app).delete("/__test__/films");
+        yield (0, supertest_1.default)(app_1.app).delete("/__test__/films");
     }));
     it("get all films", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(index_1.app).get("/api/films");
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/films");
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual(defaultData);
     }));
-    it("get film with id 1", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(index_1.app).get("/api/films/0");
+    it("get film that don't exist", () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/films/0");
+        expect(res.statusCode).toBe(404);
+    }));
+    it("get film that don't exist", () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/films/0");
         expect(res.statusCode).toBe(404);
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(index_1.app).delete("/__test__/films");
+        yield (0, supertest_1.default)(app_1.app).delete("/__test__/films");
     }));
 });
