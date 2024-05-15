@@ -1,5 +1,6 @@
 // node_modules
 import fs from "fs";
+import express from "express";
 // utils
 import { readFilePromise } from "../utils/readFilePromise";
 import { writeFilePromise } from "../utils/writeFilePromise";
@@ -39,8 +40,10 @@ const testData = [
   },
 ];
 
-const test = {
-  reset: async (req: Request, res: Response) => {
+export const getTestRouter = () => {
+  const router = express.Router();
+
+  router.delete("/films", async (req: Request, res: Response) => {
     try {
       res.sendStatus(200);
       const test = await writeFilePromise(
@@ -50,7 +53,7 @@ const test = {
     } catch (err) {
       console.log(err);
     }
-  },
-};
+  });
 
-export default test;
+  return router;
+};

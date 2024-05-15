@@ -1,8 +1,8 @@
 // node_modules
 import express from "express";
 // controllers
-import filmsController from "./controllers/films";
-import testController from "./controllers/reset";
+import { getCoursesRouter } from "./routes/filmsRouter";
+import { getTestRouter } from "./routes/testRouter";
 
 export const app = express();
 
@@ -10,11 +10,7 @@ app.use("/static", express.static("./src/static/"));
 app.use(express.json());
 
 // Films
-app.post("/api/films", filmsController.create);
-app.get("/api/films", filmsController.getAll);
-app.get("/api/films/:fid", filmsController.get);
-app.put("/api/films/:fid", filmsController.update);
-app.delete("/api/films/:fid", filmsController.delete);
+app.use("/api/films", getCoursesRouter());
 
 // Test
-app.delete("/__test__/films", testController.reset);
+app.use("/__test__", getTestRouter());
