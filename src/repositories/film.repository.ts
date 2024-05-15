@@ -2,56 +2,19 @@
 import { readFilePromise } from "../utils/readFilePromise";
 import { writeFilePromise } from "../utils/writeFilePromise";
 
-type createNewFilmType = {
-  name: string;
-  description: string;
-  country: string;
-  genre: string;
-  director: string;
-  actors: string;
-  poster: string;
-};
-
-type FilmType = {
-  id: number;
-  name: string;
-  description: string;
-  country: string;
-  genre: string;
-  director: string;
-  actors: string;
-  poster: string;
-};
-
-type editFilmType = {
-  name?: string;
-  description?: string;
-  country?: string;
-  genre?: string;
-  director?: string;
-  actors?: string;
-  poster?: string;
-};
-
 export const filmsRepository = {
   createNewFilm: async (data: createNewFilmType) => {
     const filmsData = await readFilePromise("./src/data/films.json");
     let filmsDataJSON = JSON.parse(filmsData);
     let newFilm = {
       id: filmsDataJSON[filmsDataJSON.length - 1].id + 1,
-      name: data.name || "Крутой фильм",
-      description: data.description || "Cool movie, 1999, 220 мин.",
-      country: data.country || "США",
-      genre: data.genre || "Комедия",
-      director: data.director || "Василий Пятенко",
-      actors: data.actors || "Анна Лавренко",
-      poster: data.poster,
+      ...data,
     };
 
     filmsDataJSON.push(newFilm);
     writeFilePromise("./src/data/films.json", JSON.stringify(filmsDataJSON));
 
-    return newFilm;
+    return JSON.stringify(newFilm);
   },
   getAllFilms: async () => {
     const filmsData = await readFilePromise("./src/data/films.json");
@@ -62,11 +25,7 @@ export const filmsRepository = {
     const filmData: FilmType = JSON.parse(filmsData).find(
       (item: FilmType) => +item.id === +id
     );
-    if (filmData) {
-      return filmData;
-    } else {
-      return null;
-    }
+    return filmData;
   },
   editFilm: async (id: number, data: editFilmType) => {
     const filmsData = await readFilePromise("./src/data/films.json");
@@ -95,9 +54,11 @@ export const filmsRepository = {
     const newFilmsData = JSON.parse(filmsData).filter(
       (item: FilmType) => +item.id !== +id
     );
-    writeFilePromise(
-      "./src/data/films.json",
-      JSON.stringify(newFilmsData)
-    );
-  }
+    writeFilePromise("./src/data/films.json", JSON.stringify(newFilmsData));
+  },
+  getNumbersOfFilms: async () => {
+    const filmsData = await readFilePromise("./src/data/films.json");
+    const filmsDataJSON = JSON.parse(filmsData);
+    return filmsDataJSON.length;
+  },
 };

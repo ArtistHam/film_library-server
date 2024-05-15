@@ -13,16 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCoursesRouter = void 0;
+// node_modules
 const express_1 = __importDefault(require("express"));
-// repositories
-const film_repository_1 = require("../repositories/film.repository");
-// utils
-const readFilePromise_1 = require("../utils/readFilePromise");
+// services
+const film_servise_1 = require("../services/film.servise");
 const getCoursesRouter = () => {
     const router = express_1.default.Router();
     router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const newFilm = yield film_repository_1.filmsRepository.createNewFilm({
+            const newFilm = yield film_servise_1.filmsService.createNewFilm({
                 name: req.body.name,
                 description: req.body.description,
                 country: req.body.country,
@@ -40,89 +39,46 @@ const getCoursesRouter = () => {
     }));
     router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
-            res.send(JSON.parse(filmsData));
+            const filmsData = yield film_servise_1.filmsService.getAllFilms();
+            res.send(filmsData);
         }
         catch (err) {
             res.send("error occurred");
         }
     }));
-    // router.get(
-    //   "/:fid",
-    //   async (
-    //     req: Request<{ fid: string }>,
-    //     res: Response<FilmType[] | string>
-    //   ) => {
-    //     try {
-    //       const filmsData = await readFilePromise("./src/data/films.json");
-    //       const filmData = JSON.parse(filmsData).find(
-    //         (item: FilmType) => item.id === +req.params.fid
-    //       );
-    //       if (filmData) {
-    //         res.send(filmData);
-    //       } else {
-    //         res.sendStatus(404);
-    //       }
-    //     } catch (err) {
-    //       res.send("error occurred");
-    //     }
-    //   }
-    // );
-    // router.put(
-    //   "/:fid",
-    //   async (
-    //     req: Request<{ fid: string }, {}, inUpdateFilmDto>,
-    //     res: Response<string>
-    //   ) => {
-    //     try {
-    //       const filmsData = await readFilePromise("./src/data/films.json");
-    //       const newFilmsData = JSON.parse(filmsData).map((item: FilmType) => {
-    //         if (item.id === +req.params.fid) {
-    //           const { name, description, country, genre, director, actors } =
-    //             req.body;
-    //           return {
-    //             id: item.id,
-    //             name: name || item.name,
-    //             description: description || item.description,
-    //             country: country || item.country,
-    //             genre: genre || item.genre,
-    //             director: director || item.director,
-    //             actors: actors || item.actors,
-    //             poster: item.poster,
-    //           };
-    //         } else {
-    //           return item;
-    //         }
-    //       });
-    //       res.sendStatus(200);
-    //       const test = await writeFilePromise(
-    //         "./src/data/films.json",
-    //         JSON.stringify(newFilmsData)
-    //       );
-    //     } catch (err) {
-    //       res.send("error occurred");
-    //     }
-    //   }
-    // );
-    // router.delete(
-    //   "/:fid",
-    //   async (req: Request<{ fid: string }>, res: Response<string>) => {
-    //     try {
-    //       const filmsData = await readFilePromise("./src/data/films.json");
-    //       const newFilmsData = JSON.parse(filmsData).filter(
-    //         (item: FilmType) => item.id !== +req.params.fid
-    //       );
-    //       res.sendStatus(204);
-    //       const test = await writeFilePromise(
-    //         "./src/data/films.json",
-    //         JSON.stringify(newFilmsData)
-    //       );
-    //     } catch (err) {
-    //       console.log(err);
-    //       res.send("error occurred");
-    //     }
-    //   }
-    // );
+    router.get("/:fid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const filmData = yield film_servise_1.filmsService.getFilmById(+req.params.fid);
+            if (filmData) {
+                res.send(filmData);
+            }
+            else {
+                res.sendStatus(404);
+            }
+        }
+        catch (err) {
+            res.send("error occurred");
+        }
+    }));
+    router.put("/:fid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield film_servise_1.filmsService.editFilm(+req.params.fid, req.body);
+            res.sendStatus(200);
+        }
+        catch (err) {
+            res.send("error occurred");
+        }
+    }));
+    router.delete("/:fid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield film_servise_1.filmsService.deleteFilm(+req.params.fid);
+            res.sendStatus(204);
+        }
+        catch (err) {
+            console.log(err);
+            res.send("error occurred");
+        }
+    }));
     return router;
 };
 exports.getCoursesRouter = getCoursesRouter;

@@ -17,18 +17,50 @@ exports.filmsRepository = {
     createNewFilm: (data) => __awaiter(void 0, void 0, void 0, function* () {
         const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
         let filmsDataJSON = JSON.parse(filmsData);
-        let newFilm = {
-            id: filmsDataJSON[filmsDataJSON.length - 1].id + 1,
-            name: data.name || "Крутой фильм",
-            description: data.description || "Cool movie, 1999, 220 мин.",
-            country: data.country || "США",
-            genre: data.genre || "Комедия",
-            director: data.director || "Василий Пятенко",
-            actors: data.actors || "Анна Лавренко",
-            poster: data.poster,
-        };
+        let newFilm = Object.assign({ id: filmsDataJSON[filmsDataJSON.length - 1].id + 1 }, data);
         filmsDataJSON.push(newFilm);
-        const test = yield (0, writeFilePromise_1.writeFilePromise)("./src/data/films.json", JSON.stringify(filmsDataJSON));
-        return newFilm;
+        (0, writeFilePromise_1.writeFilePromise)("./src/data/films.json", JSON.stringify(filmsDataJSON));
+        return JSON.stringify(newFilm);
+    }),
+    getAllFilms: () => __awaiter(void 0, void 0, void 0, function* () {
+        const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
+        return filmsData;
+    }),
+    getFilmById: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
+        const filmData = JSON.parse(filmsData).find((item) => +item.id === +id);
+        return filmData;
+    }),
+    editFilm: (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+        const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
+        const newFilmsData = JSON.parse(filmsData).map((item) => {
+            if (+item.id === +id) {
+                const { name, description, country, genre, director, actors } = data;
+                return {
+                    id: item.id,
+                    name: name || item.name,
+                    description: description || item.description,
+                    country: country || item.country,
+                    genre: genre || item.genre,
+                    director: director || item.director,
+                    actors: actors || item.actors,
+                    poster: item.poster,
+                };
+            }
+            else {
+                return item;
+            }
+        });
+        (0, writeFilePromise_1.writeFilePromise)("./src/data/films.json", JSON.stringify(newFilmsData));
+    }),
+    deleteFilm: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
+        const newFilmsData = JSON.parse(filmsData).filter((item) => +item.id !== +id);
+        (0, writeFilePromise_1.writeFilePromise)("./src/data/films.json", JSON.stringify(newFilmsData));
+    }),
+    getNumbersOfFilms: () => __awaiter(void 0, void 0, void 0, function* () {
+        const filmsData = yield (0, readFilePromise_1.readFilePromise)("./src/data/films.json");
+        const filmsDataJSON = JSON.parse(filmsData);
+        return filmsDataJSON.length;
     }),
 };
